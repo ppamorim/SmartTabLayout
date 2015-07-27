@@ -1,19 +1,3 @@
-/**
- * Copyright (C) 2015 ogaclejapan
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.ogaclejapan.smarttablayout;
 
 import android.content.Context;
@@ -30,34 +14,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-/**
- * To be used with ViewPager to provide a tab indicator component which give constant feedback as
- * to
- * the user's scroll progress.
- * <p>
- * To use the component, simply add it to your view hierarchy. Then in your
- * {@link android.app.Activity} or {@link android.app.Fragment}, {@link
- * android.support.v4.app.Fragment} call
- * {@link #setViewPager(android.support.v4.view.ViewPager)} providing it the ViewPager this layout
- * is being used for.
- * <p>
- * The colors can be customized in two ways. The first and simplest is to provide an array of
- * colors
- * via {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)}. The
- * alternative is via the {@link TabColorizer} interface which provides you complete control over
- * which color is used for any individual position.
- * <p>
- * The views used as tabs can be customized by calling {@link #setCustomTabView(int, int)},
- * providing the layout ID of your custom layout.
- * <p>
- * Forked from Google Samples &gt; SlidingTabsBasic &gt;
- * <a href="https://developer.android.com/samples/SlidingTabsBasic/src/com.example.android.common/view/SlidingTabLayout.html">SlidingTabLayout</a>
- */
-public class SmartTabLayout extends HorizontalScrollView {
+public class VerticalSmartTabLayout extends ScrollView {
 
   private static final boolean DEFAULT_DISTRIBUTE_EVENLY = false;
   private static final int TITLE_OFFSET_DIPS = 24;
@@ -67,7 +28,7 @@ public class SmartTabLayout extends HorizontalScrollView {
   private static final int TAB_VIEW_TEXT_COLOR = 0xFC000000;
   private static final int TAB_VIEW_TEXT_MIN_WIDTH = 0;
 
-  protected final SmartTabStrip tabStrip;
+  protected final VerticalSmartTabStrip tabStrip;
   private int titleOffset;
   private int tabViewBackgroundResId;
   private boolean tabViewTextAllCaps;
@@ -81,15 +42,15 @@ public class SmartTabLayout extends HorizontalScrollView {
   private TabProvider tabProvider;
   private boolean distributeEvenly;
 
-  public SmartTabLayout(Context context) {
+  public VerticalSmartTabLayout(Context context) {
     this(context, null);
   }
 
-  public SmartTabLayout(Context context, AttributeSet attrs) {
+  public VerticalSmartTabLayout(Context context, AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public SmartTabLayout(Context context, AttributeSet attrs, int defStyle) {
+  public VerticalSmartTabLayout(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
 
     // Disable the Scroll Bar
@@ -101,8 +62,8 @@ public class SmartTabLayout extends HorizontalScrollView {
     int tabBackgroundResId = NO_ID;
     boolean textAllCaps = TAB_VIEW_TEXT_ALL_CAPS;
     ColorStateList textColors;
-    float textSize = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP, dm);
+    float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP,
+        dm);
     int textHorizontalPadding = (int) (TAB_VIEW_PADDING_DIPS * density);
     int textMinWidth = (int) (TAB_VIEW_TEXT_MIN_WIDTH * density);
     boolean distributeEvenly = DEFAULT_DISTRIBUTE_EVENLY;
@@ -146,7 +107,7 @@ public class SmartTabLayout extends HorizontalScrollView {
       setCustomTabView(customTabLayoutId, customTabTextViewId);
     }
 
-    this.tabStrip = new SmartTabStrip(context, attrs);
+    this.tabStrip = new VerticalSmartTabStrip(context, attrs);
 
     if (distributeEvenly && tabStrip.isIndicatorAlwaysInCenter()) {
       throw new UnsupportedOperationException(
@@ -320,7 +281,7 @@ public class SmartTabLayout extends HorizontalScrollView {
     textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabViewTextSize);
     textView.setTypeface(Typeface.DEFAULT_BOLD);
     textView.setLayoutParams(new LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
     if (tabViewBackgroundResId != NO_ID) {
       textView.setBackgroundResource(tabViewBackgroundResId);
@@ -396,18 +357,18 @@ public class SmartTabLayout extends HorizontalScrollView {
 
     View selectedTab = tabStrip.getChildAt(tabIndex);
     if (selectedTab != null) {
-      int targetScrollX = Utils.getLeft(selectedTab) - Utils.getMarginStart(selectedTab) + positionOffset;
+      int targetScrollY = Utils.getHeight(selectedTab) - Utils.getMarginStart(selectedTab) + positionOffset;
       if (tabStrip.isIndicatorAlwaysInCenter()) {
         View firstTab = tabStrip.getChildAt(0);
-        int first = Utils.getWidth(firstTab) + Utils.getMarginStart(firstTab);
-        int selected = Utils.getWidth(selectedTab) + Utils.getMarginStart(selectedTab);
-        targetScrollX -= (first - selected) / 2;
+        int first = Utils.getHeight(firstTab) + Utils.getMarginStart(firstTab);
+        int selected = Utils.getHeight(selectedTab) + Utils.getMarginStart(selectedTab);
+        targetScrollY -= (first - selected) / 2;
       } else if (tabIndex > 0 || positionOffset > 0) {
         // If we're not at the first child and are mid-scroll, make sure we obey the offset
-        targetScrollX -= titleOffset;
+        targetScrollY -= titleOffset;
       }
 
-      scrollTo(targetScrollX, 0);
+      scrollTo(targetScrollY, 0);
     }
   }
 
@@ -444,7 +405,7 @@ public class SmartTabLayout extends HorizontalScrollView {
 
   /**
    * Create the custom tabs in the tab layout. Set with
-   * {@link #setCustomTabView(com.ogaclejapan.smarttablayout.SmartTabLayout.TabProvider)}
+   * {@link #setCustomTabView(com.ogaclejapan.smarttablayout.VerticalSmartTabLayout.TabProvider)}
    */
   public interface TabProvider {
 
@@ -565,5 +526,4 @@ public class SmartTabLayout extends HorizontalScrollView {
       }
     }
   }
-
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.VerticalSmartTabLayout;
 
 public enum Demo {
 
@@ -136,6 +137,24 @@ public enum Demo {
     public void startActivity(Context context) {
       DemoLikeMediumActivity.startActivity(context, this);
     }
+  },
+
+  VERTICAL(R.string.demo_title_vertical_indicator, R.layout.demo_vertical) {
+    @Override
+    public int[] tabs() {
+      return new int[] {
+          R.string.demo_tab_like_a_medium_top,
+          R.string.demo_tab_like_a_medium_latest,
+          R.string.demo_tab_like_a_medium_latest,
+          R.string.demo_tab_like_a_medium_latest,
+          R.string.demo_tab_like_a_medium_latest
+      };
+    }
+
+    @Override
+    public void startActivity(Context context) {
+      VerticalActivity.startActivity(context, this);
+    }
   };
 
   public final int titleResId;
@@ -174,7 +193,11 @@ public enum Demo {
   }
 
   public void setup(final SmartTabLayout layout) {
-    //Do nothing.
+    //Do nothing.va
+  }
+
+  public void setup(final VerticalSmartTabLayout layout) {
+    //Really?
   }
 
   public int[] tabs() {

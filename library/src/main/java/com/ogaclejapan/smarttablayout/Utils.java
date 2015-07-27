@@ -31,6 +31,10 @@ final class Utils {
     return (v == null) ? 0 : v.getWidth();
   }
 
+  static int getHeight(View v) {
+    return (v == null) ? 0 : v.getHeight();
+  }
+
   static int getRight(View v) {
     return getRight(v, false);
   }
